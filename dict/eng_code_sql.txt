@@ -1,0 +1,23 @@
+SELECT c.id AS cid, c.title AS ctitle, g.id AS gid, g.title AS gtitle, IF (i2.id IS NULL, i.id, i2.id) AS image_id FROM photo_category AS c JOIN photo_gallery AS g ON (g.c_id=c.id AND c.is_published AND g.is_published) JOIN photo_image AS i ON (i.g_id = g.id AND i.is_published) LEFT JOIN photo_image AS i2 ON (i2.g_id = g.id AND i2.is_main_foto) WHERE c.id = 1 GROUP BY g.id HAVING COUNT(i.id) > 0 ORDER BY c.ordi, g.ordi, i.ordi;
+SELECT ordi, id, title FROM photo_image WHERE EXISTS (SELECT i.id FROM photo_category AS c JOIN photo_gallery AS g ON (g.c_id=c.id AND c.is_published AND g.is_published)      JOIN photo_image AS i ON (i.g_id = g.id AND i.is_published)    WHERE i.id = 1) AND  g_id = (SELECT g_id FROM photo_image WHERE id = 1) AND (ordi = (SELECT MAX(ordi) FROM photo_image    WHERE is_published AND g_id = (SELECT g_id FROM photo_image WHERE id = 1)    AND ordi < (SELECT ordi FROM photo_image WHERE id = 1)) OR ordi = (SELECT MIN(ordi) from photo_image WHERE is_published AND g_id = (SELECT g_id FROM photo_image WHERE id = 1)  AND ordi > (SELECT ordi FROM photo_image WHERE id = 1)) OR id = 1);
+
+CREATE TABLE news_list (news_date TIMESTAMP NOT NULL, news_title VARCHAR(255));
+SELECT 0 AS news_date, 'DUMMY' AS news_title UNION (
+SELECT  UNIX_TIMESTAMP(nl_1.news_date) AS news_date, nl_1.news_title FROM news_list nl_1  WHERE UNIX_TIMESTAMP(nl_1.news_date) > ?d  ORDER BY news_date ASC  LIMIT 0, 6
+) UNION    SELECT ?d AS news_date, 'CURRENT' AS news_title UNION (
+SELECT  UNIX_TIMESTAMP(nl_2.news_date) AS news_date,   nl_2.news_title   FROM news_list nl_2   WHERE UNIX_TIMESTAMP(nl_2.news_date) < ?d  ORDER BY news_date DESC   LIMIT 0, 6
+) ORDER BY news_date DESC
+
+ALTER TABLE "user" ADD COLUMN fts tsvector;
+CREATE INDEX user_fts_ix ON "user" USING gist(fts);
+UPDATE "user" SET fts = setweight(coalesce(to_tsvector('russian', "login"), ''), 'A');
+CREATE OR REPLACE FUNCTION tr_user_fts() RETURNS TRIGGER AS
+DECLARE _need_update BOOLEAN := true; BEGIN  IF TG_OP = 'UPDATE' THEN  IF ROW(NEW.login) IS NOT DISTINCT FROM ROW(OLD.login) THEN  _need_update := false;   END IF; END IF; IF _need_update THEN NEW.fts := setweight(coalesce(to_tsvector('russian', NEW.login), ''), 'A'); END IF; END;
+LANGUAGE plpgsql VOLATILE;
+CREATE TRIGGER biu_tr_user_fts BEFORE INSERT OR UPDATE ON "user" FOR EACH ROW EXECUTE tr_user_fts();
+
+ALTER TABLE user_profile ADD COLUMN fts tsvector;
+CREATE INDEX user_profile_fts_ix ON user_profile USING gist(fts);
+UPDATE user_profile SET fts =  setweight(coalesce(to_tsvector('russian', firstname), ''), 'A') || setweight(coalesce(to_tsvector('russian', middlename), ''), 'A') || setweight(coalesce(to_tsvector('russian', lastname), ''), 'A');
+ALTER TABLE company ADD COLUMN fts tsvector;
+CREATE INDEX company_fts_ix ON company USING gist(fts);

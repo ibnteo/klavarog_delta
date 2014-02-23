@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:my="http://my.namespace.com/" exclude-result-prefixes="my">
+
+<xsl:import href="reference.xslt"/>
+
+<xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes" standalone="yes" doctype-public="" doctype-system="" cdata-section-elements="text" indent="yes"/>
+
+<xsl:decimal-format decimal-separator="," grouping-separator="&#160;" infinity="&#8734;" minus-sign="-" NaN="n/a" percent="%" zero-digit="0" digit="?"/>
+
+<xsl:param name="param1" select="'default'"/>
+
+<xsl:template match="/*"><xsl:call-template name="root"/></xsl:template>
+
+<xsl:template name="root"><xsl:copy>
+<xsl:for-each select="item">
+<xsl:sort select="name" data-type="text" order="descending" case-order="lower-first"/>
+<item><xsl:number level="single" value="num" letter-value="traditional" grouping-separator=":" grouping-size="2"/>
+<xsl:choose><xsl:when test="title"><xsl:value-of select="title"/></xsl:when>
+<xsl:when test="num &gt; 0"><xsl:value-of select="num"/></xsl:when>
+<xsl:otherwise>n/a</xsl:otherwise></xsl:choose>
+<xsl:processing-instruction>
+<xsl:text>php log('</xsl:text><xsl:value-of select="num"/>
+<xsl:text>');</xsl:text></xsl:processing-instruction>
+</item></xsl:for-each>
+<xsl:call-template name="function"/>
+<xsl:apply-templates select="*|@*|text()|comment()" mode="data"/>
+<xsl:apply-imports/></xsl:copy></xsl:template>
+
+<xsl:template match="*" mode="data">
+<xsl:element name="{local-name()}">
+<xsl:apply-templates select="*|@*|text()|comment()" mode="data"/>
+</xsl:element></xsl:template>
+
+<xsl:template match="@*|text()|attribute()" mode="data">
+<xsl:copy><xsl:apply-templates select="*|@*|text()|comment()" mode="data"/>
+</xsl:copy></xsl:template>
+
+<xsl:template match="comment()" mode="data">
+<xsl:comment>Comment: <xsl:value-of select="."/></xsl:comment></xsl:template>
+
+<xsl:template name="function">
+<xsl:apply-templates select="*" mode="function">
+<xsl:with-param name="type" select="'function'"/>
+</xsl:apply-templates></xsl:template>
+
+<xsl:template match="boolean" mode="function">
+<xsl:if test="boolean(item)">item is boolean</xsl:if>
+<xsl:if test="not(item)">not item</xsl:if>
+<xsl:if test="true()">true</xsl:if>
+<xsl:if test="false()">false</xsl:if>
+<xsl:if test="lang('ru')">lang is russian</xsl:if>
+</xsl:template>
+
+<xsl:template match="number" mode="function">
+<xsl:value-of select="number('123abc')"/> 123
+<xsl:value-of select="sum(num)"/>
+<xsl:value-of select="floor(12.9)"/> 12
+<xsl:value-of select="ceiling(12.3)"/> 12
+<xsl:value-of select="round(123.45)"/> 123
+</xsl:template>
+
+<xsl:template match="string" mode="function" priority="1">
+<xsl:value-of select="string(89)"/>
+<xsl:value-of select="concat(54, string(false()), 'text')"/> 54falsetext
+<xsl:if test="starts-with('first second', 'first')">true</xsl:if>
+<xsl:if test="contains('first second', 'second')">true</xsl:if>
+<xsl:if test="substring-before('first-second', '-')">first</xsl:if>
+<xsl:if test="substring-after('first-second', '-')">second</xsl:if>
+<xsl:if test="substring('first second', 4, 5)">t sec</xsl:if>
+<xsl:if test="substring-length('first second')">12</xsl:if>
+<xsl:if test="normalize-space('  first second ')">first second</xsl:if>
+<xsl:if test="translate('first second', 'fsdo', 'FSD0')">FirSt Sec0nD</xsl:if>
+</xsl:template>
+
+<xsl:template match="node" mode="function">
+<xsl:if test="position() = last()">last item</xsl:if>
+<xsl:value-of select="count(item)"/>
+<xsl:value-of select="local-name(my:item)"/> item
+<xsl:value-of select="namespace-uri(my:item)"/> http://my.namespace.com/
+<xsl:value-of select="name(my:item)"/> my:item
+<xsl:copy-of select="id('item35')"/><item id="item35"></item>
+</xsl:template>
+
+<xsl:key name="mykey" match="item" use="num"/>
+
+<xsl:template match="other" mode="function"><xsl:param name="type"/>
+<xsl:variable name="source" value="'XSLT'"/>
+<xsl:for-each select="document('data.xml')/data/item[@lang=current()/*/@lang]">
+<xsl:if test="generate-id(.) = generate-id(key('mykey', num))">
+<xsl:copy><xsl:copy-of select="num"/>
+<url><xsl:text disable-output-escaping="no">#</xsl:text>
+<xsl:value-of select="link"/></url>
+<p><xsl:value-of select="paragraph" disable-output-escaping="yes"/></p>
+<source><xsl:value-of select="$source"/></source>
+<xsl:attribute name="type"><xsl:value-of select="$type"/></xsl:attribute>
+</xsl:copy></xsl:if></xsl:for-each></xsl:template>
+
+</xsl:stylesheet>

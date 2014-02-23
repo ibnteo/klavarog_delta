@@ -1,0 +1,3 @@
+AddType application/octet-stream keylayout
+
+AddType "text/plain; charset=utf-8" .txt

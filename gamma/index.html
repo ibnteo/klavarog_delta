@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Klavarog γ</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="stylesheet" type="text/css" href="index.css?3" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="index.js?4"></script>
+</head>
+<body>
+
+<div id="stat" title="[rate in words] [rate in symbols] [errors]"></div>
+
+<div class="data">
+<input id="input_text"/>
+<div id="question"></div>
+<div class="text"><span class="line" id="text1"></span></div>
+<div class="text"><span class="line" id="text2"></span></div>
+<div class="text"><span class="line" id="text3"></span></div>
+<div class="text"><span class="line" id="text4"></span></div>
+<div class="text"><span class="line" id="text5"></span></div>
+</div>
+
+<div class="info">
+
+<div id="keyboard">
+<div class="block" style="height: 200px;">
+<div class="keyboard" id="kb_qwerty">
+<div class="line"><div class="f5">`~</div><div class="f5">1!</div><div class="f4">2@</div><div class="f3">3#</div><div class="f2">4$</div><div class="f2">5%</div><div class="f1">6^</div><div class="f1">7&amp;</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">=+</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Q</div><div class="f4">W</div><div class="f3">E</div><div class="f2">R</div><div class="f2">T</div><div class="f1">Y</div><div class="f1">U</div><div class="f3">I</div><div class="f4">O</div><div class="f5">P</div><div class="f5">[{</div><div class="f5">]}</div><div class="f5">\|</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">A</div><div class="f4 hand">S</div><div class="f3 hand">D</div><div class="f2 hand start">F</div><div class="f2">G</div><div class="f1">H</div><div class="f1 hand start">J</div><div class="f3 hand">K</div><div class="f4 hand">L</div><div class="f5 hand">;:</div><div class="f5">'"</div><div class="sys enter">Ent ¶</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">Z</div><div class="f4">X</div><div class="f3">C</div><div class="f2">V</div><div class="f2">B</div><div class="f1">N</div><div class="f1">M</div><div class="f3">,&lt;</div><div class="f4">.&gt;</div><div class="f5">/?</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Space</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_dvorak" style="display: none;">
+<div class="line"><div class="f5">`~</div><div class="f5">1!</div><div class="f4">2@</div><div class="f3">3#</div><div class="f2">4$</div><div class="f2">5%</div><div class="f1">6^</div><div class="f1">7&amp;</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">[{</div><div class="f5">]}</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">'"</div><div class="f4">,&lt;</div><div class="f3">.&gt;</div><div class="f2">P</div><div class="f2">Y</div><div class="f1">F</div><div class="f1">G</div><div class="f3">C</div><div class="f4">R</div><div class="f5">L</div><div class="f5">/?</div><div class="f5">+=</div><div class="f5">\|</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">A</div><div class="f4 hand">O</div><div class="f3 hand">E</div><div class="f2 hand start">U</div><div class="f2">I</div><div class="f1">D</div><div class="f1 hand start">H</div><div class="f3 hand">T</div><div class="f4 hand">N</div><div class="f5 hand">S</div><div class="f5">-_</div><div class="sys enter">Ent ¶</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">;:</div><div class="f4">Q</div><div class="f3">J</div><div class="f2">K</div><div class="f2">X</div><div class="f1">B</div><div class="f1">M</div><div class="f3">W</div><div class="f4">V</div><div class="f5">Z</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Space</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_rus_win" style="display: none;">
+<div class="line"><div class="f5">Ё</div><div class="f5">1!</div><div class="f4">2"</div><div class="f3">3№</div><div class="f2">4;</div><div class="f2">5%</div><div class="f1">6:</div><div class="f1">7?</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">=+</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Й</div><div class="f4">Ц</div><div class="f3">У</div><div class="f2">К</div><div class="f2">Е</div><div class="f1">Н</div><div class="f1">Г</div><div class="f3">Ш</div><div class="f4">Щ</div><div class="f5">З</div><div class="f5">Х</div><div class="f5">Ъ</div><div class="f5">\/</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">Ф</div><div class="f4 hand">Ы</div><div class="f3 hand">В</div><div class="f2 hand start">А</div><div class="f2">П</div><div class="f1">Р</div><div class="f1 hand start">О</div><div class="f3 hand">Л</div><div class="f4 hand">Д</div><div class="f5 hand">Ж</div><div class="f5">Э</div><div class="sys enter">Ent ¶</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">Я</div><div class="f4">Ч</div><div class="f3">С</div><div class="f2">М</div><div class="f2">И</div><div class="f1">Т</div><div class="f1">Ь</div><div class="f3">Б</div><div class="f4">Ю</div><div class="f5">.,</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Пробел</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_rus" style="display: none;">
+<div class="line"><div class="f5">|+</div><div class="f5">№1</div><div class="f4">-2</div><div class="f3">/3</div><div class="f2">"4</div><div class="f2">:5</div><div class="f1">,6</div><div class="f1">.7</div><div class="f3">_8</div><div class="f4">?9</div><div class="f5">%0</div><div class="f5">!=</div><div class="f5">;\</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Й</div><div class="f4">Ц</div><div class="f3">У</div><div class="f2">К</div><div class="f2">Е</div><div class="f1">Н</div><div class="f1">Г</div><div class="f3">Ш</div><div class="f4">Щ</div><div class="f5">З</div><div class="f5">Х</div><div class="f5">Ъ</div><div class="f5">)(</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">Ф</div><div class="f4 hand">Ы</div><div class="f3 hand">В</div><div class="f2 hand start">А</div><div class="f2">П</div><div class="f1">Р</div><div class="f1 hand start">О</div><div class="f3 hand">Л</div><div class="f4 hand">Д</div><div class="f5 hand">Ж</div><div class="f5">Э</div><div class="sys enter">Ent ¶</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">Я</div><div class="f4">Ч</div><div class="f3">С</div><div class="f2">М</div><div class="f2">И</div><div class="f1">Т</div><div class="f1">Ь</div><div class="f3">Б</div><div class="f4">Ю</div><div class="f5">Ё</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Пробел</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_ph_ru" style="display: none;">
+<div class="line"><div class="f5">Ю</div><div class="f5">1!</div><div class="f4">2@</div><div class="f3">3ё</div><div class="f2">4Ё</div><div class="f2">5ъ</div><div class="f1">6Ъ</div><div class="f1">7&amp;</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">Ч</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Я</div><div class="f4">В</div><div class="f3">Е</div><div class="f2">Р</div><div class="f2">Т</div><div class="f1">Ы</div><div class="f1">У</div><div class="f3">И</div><div class="f4">О</div><div class="f5">П</div><div class="f5">Ш</div><div class="f5">Щ</div><div class="f5">Э</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">А</div><div class="f4 hand">С</div><div class="f3 hand">Д</div><div class="f2 hand start">Ф</div><div class="f2">Г</div><div class="f1">Х</div><div class="f1 hand start">Й</div><div class="f3 hand">К</div><div class="f4 hand">Л</div><div class="f5 hand">;:</div><div class="f5">'"</div><div class="sys enter">Ent ¶</div></div>
+<div class="line"><div class="sys lshift2">Shift</div><div class="f5">|</div><div class="f5">З</div><div class="f4">Ь</div><div class="f3">Ц</div><div class="f2">Ж</div><div class="f2">Б</div><div class="f1">Н</div><div class="f1">М</div><div class="f3">,&lt;</div><div class="f4">.&gt;</div><div class="f5">/?</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Пробел</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_mac_ru" style="display: none;">
+<div class="line"><div class="f5">&lt;&gt;</div><div class="f5">1!</div><div class="f4">2"</div><div class="f3">3№</div><div class="f2">4%</div><div class="f2">5:</div><div class="f1">6,</div><div class="f1">7.</div><div class="f3">8;</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">=+</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Й</div><div class="f4">Ц</div><div class="f3">У</div><div class="f2">К</div><div class="f2">Е</div><div class="f1">Н</div><div class="f1">Г</div><div class="f3">Ш</div><div class="f4">Щ</div><div class="f5">З</div><div class="f5">Х</div><div class="f5">Ъ</div><div class="sys mac_enter">Ent ¶</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">Ф</div><div class="f4 hand">Ы</div><div class="f3 hand">В</div><div class="f2 hand start">А</div><div class="f2">П</div><div class="f1">Р</div><div class="f1 hand start">О</div><div class="f3 hand">Л</div><div class="f4 hand">Д</div><div class="f5 hand">Ж</div><div class="f5">Э</div><div class="f5">Ё</div></div>
+<div class="line"><div class="sys lshift2">Shift</div><div class="f5">[]</div><div class="f5">Я</div><div class="f4">Ч</div><div class="f3">С</div><div class="f2">М</div><div class="f2">И</div><div class="f1">Т</div><div class="f1">Ь</div><div class="f3">Б</div><div class="f4">Ю</div><div class="f5">/?</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lalt">Alt</div><div class="sys lcmd">Cmd</div><div class="space">Пробел</div><div class="sys rcmd">Cmd</div><div class="sys ralt">Alt</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+
+<div style="clear: left;"></div>
+</div>
+
+<div class="select">
+<span id="sel_reload" title="reload text">↻</span>
+<select id="sel_language">
+<option value="en_base">English basic</option>
+<option value="en_adv">English advanced</option>
+<option value="en_prog_simple">Programming languages</option>
+<option value="ru_base">Русский начальный</option>
+<option value="ru_base2">Русский начальный 2</option>
+<option value="ru_adv">Русский продвинутый</option>
+<!--
+<option value="ru_dict_en_business">Англо-русский словарь</option>
+-->
+</select>
+
+<select id="sel_keyboard" style="width: 7em;">
+<option class="en" value="qwerty">Qwerty</option>
+<option class="en" value="dvorak">Dvorak</option>
+<option class="ru" value="rus_win">Рус Win</option>
+<option class="ru" value="rus">Рус Маш</option>
+<option class="ru" value="ph_ru">Рус Фон</option>
+<option class="ru" value="mac_ru">Mac Cyr</option>
+<option class="ru en" value="dzen">dzen</option>
+</select>
+
+<input id="show_color" type="checkbox" checked="checked" title="color"/>
+
+<a style="font-size: 11px;" href="mailto:ibnteo@gmail.com">ibnteo@gmail.com</a>
+</div>
+
+</div>
+
+</div>
+<div style="padding-top: 40px;">
+<!--
+<script type="text/javascript" language="JavaScript" src="http://reformal.ru/tab.js?title=Klavarog&domain=klava&color=0000ff&align=left&charset=utf-8&ltitle=%C5%F1%F2%FC+%E8%E4%E5%E8%3F+%C2%FB%F1%EA%E0%E6%E8%F2%E5+%E8%F5%21%85&lfont=Verdana, Geneva, sans-serif&lsize=11px&waction=1&regime=1"></script>
+-->
+<div style="font-size: 12px;">
+<!--
+<a href="http://klava.reformal.ru/" target="_blank">Проголосуйте</a> за нужные Вам направления развития проекта.
+-->
+<!--
+<a href="/delta/">Тест Δ</a>
+-->
+</div>
+</div>
+
+</body>
+</html>

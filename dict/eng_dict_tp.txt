@@ -1,0 +1,4 @@
+a = ah, aw, ha, hmm, ho, mmm, oh, ooh, uh, well, whoa, wow
+akesi = creeping animal, reptile, amphibian, large arthropod
+ala = not, no, zero, un-
+alasa = to gather

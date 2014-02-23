@@ -1,0 +1,127 @@
+body, input, div, span {
+    font-family: monospace;
+    font-size: 15px;
+}
+body {
+    padding-top: 100px;
+    text-align: center;
+    background: #ddd;
+    color: #000;
+}
+.data {
+    text-align: left;
+    display: inline-block;
+    width: 780px;
+}
+.text {
+}
+.text span.line {
+    margin: 7px;
+    background: #fff;
+}
+.text span.line .error {
+    background: #ff8;
+}
+.text .printed {
+    background: #ccc;
+}
+#stat {
+    position: absolute;
+    top: 40px;
+    left: -40px;
+    width: 100%;
+    text-align: center;
+}
+#input_text {
+    padding: 3px 5px;
+    border: 1px solid #777;
+}
+#input_text.error {
+    background: #aaa;
+}
+.info {
+    text-align: center;
+    margin-top: 40px;
+    margin-right: 50px;
+}
+#sel_reload {
+    cursor: pointer;
+}
+#keyboard {
+    text-align: left;
+    display: inline-block;
+    width: 530px;
+}
+#keyboard .line {
+    clear: left;
+}
+#keyboard .line div {
+    float: left;
+    width: 20px;
+    line-height: 20px;
+    font-size: 15px;
+    border: 1px solid #777;
+    background: #fff;
+    margin: 2px;
+    padding: 5px;
+}
+#keyboard div.f5 {
+    background: #c5d0e6;
+}
+#keyboard div.f4 {
+    background: #ffdead;
+}
+#keyboard div.f3 {
+    background: #ffc8a8;
+}
+#keyboard div.f2 {
+    background: #1fcecb;
+}
+#keyboard div.f1 {
+    background: #bdecb6;
+}
+#keyboard div.tab {
+    width: 40px;
+}
+#keyboard div.caps {
+    width: 50px;
+}
+#keyboard div.lshift {
+    width: 70px;
+}
+#keyboard div.backspace {
+    width: 40px;
+}
+#keyboard div.enter {
+    width: 46px;
+}
+#keyboard div.rshift {
+    width: 62px;
+}
+#keyboard div.lctrl,
+#keyboard div.lwin,
+#keyboard div.lalt,
+#keyboard div.rctrl,
+#keyboard div.rwin,
+#keyboard div.ralt,
+#keyboard div.menu {
+    width: 30px;
+}
+#keyboard div.sys {
+    background: #cacaca;
+    font-size: 12px;
+    text-align: center;
+}
+#keyboard div.space {
+    width: 186px;
+    font-size: 14px;
+    text-align: center;
+}
+#keyboard div.hand {
+}
+#keyboard div.start {
+}
+#keyboard div.select {
+    margin-top: 40px;
+    text-align: center;
+}

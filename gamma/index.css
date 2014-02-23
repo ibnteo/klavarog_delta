@@ -1,0 +1,159 @@
+body, input, div, span {
+    font-family: monospace;
+    font-size: 15px;
+}
+body {
+    text-align: center;
+    background: #ddd;
+    background: #fff;
+    color: #000;
+}
+.data {
+    padding-top: 100px;
+    text-align: left;
+    display: inline-block;
+    width: 780px;
+}
+.text {
+    margin-bottom: 1px;
+}
+.dict .text {
+    margin-top: 5px;
+}
+.text span.line {
+    margin: 7px;
+    background: #fff;
+    1background: #ddd;
+}
+.error {
+    background: #ff8;
+}
+.printed {
+    background: #ccc;
+}
+#stat {
+    position: absolute;
+    top: 40px;
+    left: -40px;
+    width: 100%;
+    text-align: center;
+    cursor: help;
+}
+#input_text {
+    padding: 3px 5px;
+    1border: 1px solid #777;
+    1border: none;
+    1border-bottom: 1px dotted #000;
+}
+#input_text.error {
+    background: #aaa;
+}
+.info {
+    text-align: center;
+    margin-top: 40px;
+    margin-right: 50px;
+}
+#question {
+    font-size: 20px;
+    margin: 3px 7px;
+}
+#sel_reload {
+    cursor: pointer;
+}
+#keyboard {
+    text-align: left;
+    display: inline-block;
+    width: 530px;
+}
+#keyboard .line {
+    clear: left;
+}
+#keyboard .line div {
+    float: left;
+    width: 20px;
+    line-height: 20px;
+    font-size: 15px;
+    border: 2px solid #aaa;
+    background: #fff;
+    margin: 1px;
+    padding: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+#keyboard div.bw .line div {
+    background: #fff;
+}
+#keyboard div.bw .line div.sys {
+    background: #ddd;
+}
+#keyboard div.f5 {
+    background: #c5d0e6;
+    background: #93E2D5;
+}
+#keyboard div.f4 {
+    background: #ffdead;
+    background: #89E894;
+}
+#keyboard div.f3 {
+    background: #ffc8a8;
+    background: #BED661;
+}
+#keyboard div.f2 {
+    background: #1fcecb;
+    background: #78D5E3;
+}
+#keyboard div.f1 {
+    background: #bdecb6;
+    background: #34DDDD;
+}
+#keyboard div.tab {
+    width: 40px;
+}
+#keyboard div.caps {
+    width: 50px;
+}
+#keyboard div.lshift {
+    width: 70px;
+}
+#keyboard div.lshift2 {
+    width: 34px;
+}
+#keyboard div.backspace {
+    width: 40px;
+}
+#keyboard div.enter {
+    width: 46px;
+}
+#keyboard div.rshift {
+    width: 62px;
+}
+#keyboard div.lctrl,
+#keyboard div.lwin,
+#keyboard div.lcmd,
+#keyboard div.lalt,
+#keyboard div.rctrl,
+#keyboard div.rwin,
+#keyboard div.rcmd,
+#keyboard div.ralt,
+#keyboard div.menu {
+    width: 30px;
+}
+#keyboard div.sys {
+    background: #ccc;
+    font-size: 12px;
+    text-align: center;
+}
+#keyboard div.space {
+    width: 186px;
+    font-size: 14px;
+    text-align: center;
+}
+#keyboard div.hand {
+    border: 2px solid #444;
+}
+#keyboard div.start {
+}
+#keyboard div.select {
+    margin-top: 40px;
+    text-align: center;
+}

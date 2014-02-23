@@ -1,4 +1,4 @@
-klavarog_delta
+Klavarog Δ
 ==============
 
 Keyboard trainer "Klavarog Δ" (klava.org)

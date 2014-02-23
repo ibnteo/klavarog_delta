@@ -1,0 +1,117 @@
+body {
+	background: #fff;
+	color: #000;
+	font-size: 12pt;
+}
+
+#kb {
+	width: 700pt;
+	margin: 50px auto;
+}
+#info {
+	padding-top: 30px;
+	text-align: right;
+	font-size: 12px;
+}
+#user {
+	float: left;
+	background: url(../files/avatar/keyboard.png) no-repeat;
+	padding-left: 60px;
+	height: 50px;
+	font-family: sans-serif;
+}
+
+#input {
+	margin-bottom: 3px;
+	clear: left; padding-top: 50px;
+}
+#input input, #text {
+	font-family: Times New Roman, serif;
+	font-size: 25px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
+#text {
+	position: absolute;
+}
+#text div {
+	line-height: 130%;
+}
+
+#input input {
+	width: 100%;
+	background: #fff;
+	color: #000;
+	border-bottom: 1px dotted #aaa;
+}
+
+#input input.error {
+	background: #ff0;
+}
+#text.error {
+	color: #f00;
+}
+#text span.old {
+	color: #aaa;
+}
+#text span.cursor {
+	/*background: #eee;
+	color: #fff;
+	padding: 0 2px;*/
+	border-bottom: 2px solid #777;
+}
+#text span.metronome {
+	background: #ffa;
+}
+#text div.maxerrors {
+	color: red;
+}
+#text div.hide {
+	display: none;
+}
+
+div.annotation {
+	color: #aaa;
+	margin-top: -50px;
+	font-size: 30px;
+	border: 2px solid #aaa;
+	background: #fff;
+	height: 300px;
+	position: absolute;
+	margin: 0 auto;
+	padding: 20px;
+	top: 150px;
+	width: 680pt;
+}
+div.close_title {
+	float: right;
+	margin-right: 10px;
+	font-size: 10px;
+	color: #aaa;
+	font-family: sans-serif;
+}
+span.close {
+	height: 20px;
+	padding-left: 20px;
+	background: url(../i/icons.png) no-repeat 0 -400px;
+	cursor: pointer;
+	float: right;
+}
+
+.icon_speed {
+	margin-left: 20px;
+	background: url(../i/icons.png) no-repeat 0 -300px;
+	padding-left: 20px;
+}
+.icon_errors {
+	margin-left: 20px;
+	background: url(../i/icons.png) no-repeat 0 -250px;
+	padding-left: 20px;
+}
+.icon_metronome {
+	margin-left: 20px;
+	background: url(../i/icons.png) no-repeat 0 -350px;
+	padding-left: 20px;
+}

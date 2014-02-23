@@ -1,0 +1,81 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+protected static $_current_databases = array(); protected static $_set_names;
+public function connect() {
+if ($this->_connection) return;
+if (Database_MySQL::$_set_names === NULL) { Database_MySQL::$_set_names = ! function_exists('mysql_set_charset');}
+extract($this->_config['connection'] + array('database' => 'klavarog', 'username' => 'bill', 'password' => 'gates'));
+unset($this->_config['connection']['username'], $this->_config['connection']['password']);
+try { if (empty($persistent)) { $this->_connection = mysql_connect($hostname, $username, $password, TRUE); } else { $this->_connection = mysql_pconnect($hostname, $username, $password);}} catch (ErrorException $e) { $this->_connection = NULL; throw $e; }
+$this->_connection_id = sha1($hostname.'_'.$username.'_'.$password); $this->_select_db($database);
+if ( ! empty($this->_config['charset'])) {$this->set_charset($this->_config['charset']);}}
+protected function _select_db($database) {
+if ( ! mysql_select_db($database, $this->_connection)) { throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection)); }
+Database_MySQL::$_current_databases[$this->_connection_id] = $database; }
+public function disconnect() {
+try { $status = TRUE; if (is_resource($this->_connection)) { $status = mysql_close($this->_connection); }} catch (Exception $e) { $status = is_resource($this->_connection); }
+return $status; }
+public function set_charset($charset) {
+$this->_connection or $this->connect();
+if (Database_MySQL::$_set_names === TRUE) { $status = (bool) mysql_query('SET NAMES '.$this->quote($charset), $this->_connection); } else { $status = mysql_set_charset($charset, $this->_connection); }
+if ($status === FALSE) { throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection)); }}
+public function query($type, $sql, $as_object) {
+$this->_connection or $this->connect();
+if ( ! empty($this->_config['profiling'])) { $benchmark = Profiler::start("Database ({$this->_instance})", $sql); }
+if ( ! empty($this->_config['connection']['persistent']) AND $this->_config['connection']['database'] !== Database_MySQL::$_current_databases[$this->_connection_id]) { $this->_select_db($this->_config['connection']['database']); }
+if (($result = mysql_query($sql, $this->_connection)) === FALSE) {
+if (isset($benchmark)) { Profiler::delete($benchmark); }
+throw new Database_Exception(':error [ :query ]', array(':error' => mysql_error($this->_connection), ':query' => $sql), mysql_errno($this->_connection)); }
+if (isset($benchmark)) { Profiler::stop($benchmark); } $this->last_query = $sql;
+if ($type === Database::SELECT) { return new Database_MySQL_Result($result, $sql, $as_object); } elseif ($type === Database::INSERT) { return array(mysql_insert_id($this->_connection), mysql_affected_rows($this->_connection), ); } else { return mysql_affected_rows($this->_connection); }}
+public function datatype($type) {
+static $types = array('blob' => array('type' => 'string', 'binary' => TRUE, 'character_maximum_length' => '65535'), 'bool' => array('type' => 'bool'), 'year' => array('type' => 'string'));
+$type = str_replace(' zerofill', '', $type); if (isset($types[$type])) return $types[$type];
+return parent::datatype($type); }
+public function list_tables($like = NULL) { if (is_string($like)) { $result = $this->query(Database::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE); } else { $result = $this->query(Database::SELECT, 'SHOW TABLES', FALSE); }
+$tables = array(); foreach ($result as $row) { $tables[] = reset($row); } return $tables; }
+public function list_columns($table, $like = NULL) {
+$table = $this->quote_table($table); if (is_string($like)) { $result = $this->query(Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE); } else { $result = $this->query(Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE); } $count = 0; $columns = array();
+foreach ($result as $row) {
+list($type, $length) = $this->_parse_type($row['Type']);
+$column = $this->datatype($type); $column['column_name'] = $row['Field']; $column['column_default'] = $row['Default'];
+switch ($column['type']) {
+case 'float': if (isset($length)) { list($column['numeric_precision'], $column['numeric_scale']) = explode(',', $length); } break;
+case 'varchar': $column['character_maximum_length'] = $length; case 'text': break; }
+$column['comment'] = $row['Comment']; $column['extra'] = $row['Extra']; $columns[$row['Field']] = $column; } return $columns; }
+public function escape($value) {
+$this->_connection or $this->connect();
+if (($value = mysql_real_escape_string((string) $value, $this->_connection)) === FALSE) { throw new Database_Exception(':error', array(':error' => mysql_errno($this->_connection)), mysql_error($this->_connection)); }
+return "'$value'"; }
+
+<? error_reporting(E_ALL); require 'config.inc.php'; ?>
+<html><head><title><?=$header?></title></head>
+<body><h1><?=$header?></h1><form method="post"><input type="hidden" name="submit" value="1">
+<table border="0">
+<? foreach ($fields as $k=>$v) { $v = str_replace('{'.$k.'}', '', $v); ?><tr><td><?=$v?></td><td><? if ($k == 'message') { ?><textarea name="message"></textarea><? } else { ?><input name="<?=$k?>"><? } ?></td></tr><? } ?>
+<tr><td></td><td><input type="submit" value="Send"></td></tr></table></form>
+<? if (isset($_POST['submit']) && isset($_POST['message']) && $_POST['message']) {
+$f = fopen('db.index', 'a'); fwrite($f, "\n");
+foreach ($_POST as $k=>$v) { $v = htmlspecialchars($v); $v = str_replace("\t", ' ', $v); fwrite($f, "$k>$v\t"); }
+fclose($f); }
+$message_template = fopen('message.inc.php', 'r');
+$message_template = fread($message_template, filesize('message.inc.php'));
+$f = fopen('db.index', 'r'); $index = array_reverse(split("\n",fread($f, filesize('db.index')+1))); fclose($f);
+$orig_index = $index;
+$i = isset($_GET['skip']) ? (int)$_GET['skip'] : '0'; $k = $i+$per_page;
+while($i > 0) { array_shift($index); $i--; }
+while($k < count($orig_index)) { array_pop($index); $k++; }
+$i = 0; while($i<count($orig_index)) { print '<a href="?skip='.$i.'">'.($i/$per_page+1). '</a> '; $i+=$per_page; }
+foreach ($index as $message) { $message_info = split("\t", $message); foreach ($message_array as $k=>$v) { $message_array[$k] = ''; }
+foreach ($message_info as $field) { $option = split('>', $field);
+foreach ($fields as $config_field=>$config_value) { if ($config_field == $option[0]) { $message_array[$config_field] = str_replace('{'.$config_field.'}', $option[1], $config_value); }}}
+$template = $message_template;
+foreach ($message_array as $field=>$value) { $template = str_replace('{'.$field.'}', $value, $template); }
+foreach ($fields as $config_field=>$config_value) { $template = str_replace('{'.$config_field.'}', '', $template); }
+print $template;} require 'footer.inc.php'; ?>
+
+class cookie_Core { public static function set($name, $value = NULL, $expire = NULL, $path = NULL, $domain = NULL, $secure = NULL, $httponly = NULL) { if (headers_sent()) return FALSE; is_array($name) and extract($name, EXTR_OVERWRITE); $config = Kohana::config('cookie'); foreach (array('value', 'expire', 'domain', 'path', 'secure', 'httponly') as $item) { if ($$item === NULL AND isset($config[$item])) { $$item = $config[$item]; } } $expire = ($expire == 0) ? 0 : time() + (int) $expire; return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly); } public static function get($name, $default = NULL, $xss_clean = FALSE) { return Input::instance()->cookie($name, $default, $xss_clean); } public static function delete($name, $path = NULL, $domain = NULL) { if ( ! isset($_COOKIE[$name])) return FALSE; unset($_COOKIE[$name]); return cookie::set($name, '', -86400, $path, $domain, FALSE, FALSE); } }
+abstract class Template_Controller extends Controller { public $template = 'template'; public $auto_render = TRUE; public function __construct() { parent::__construct(); $this->template = new View($this->template); if ($this->auto_render == TRUE) { Event::add('system.post_controller', array($this, '_render')); } } public function _render() { if ($this->auto_render == TRUE) { $this->template->render(TRUE); } } }
+public static function log_directory($dir = NULL) { static $directory; if ( ! empty($dir)) { $dir = realpath($dir); if (is_dir($dir) AND is_writable($dir)) { $directory = str_replace('\\', '/', $dir).'/'; } else { throw new Kohana_Exception('core.log_dir_unwritable', $dir); } } return $directory; }
+public function rotate($degrees) { $degrees = (int) $degrees; if ($degrees > 180) { do { $degrees -= 360; } while($degrees > 180); } if ($degrees < -180) { do { $degrees += 360; } while($degrees < -180); } $this->actions['rotate'] = $degrees; return $this; }
+public function save($new_image = FALSE, $chmod = 0644, $keep_actions = FALSE) { empty($new_image) and $new_image = $this->image['file']; $dir  = pathinfo($new_image, PATHINFO_DIRNAME); $file = pathinfo($new_image, PATHINFO_BASENAME); $dir = str_replace('\\', '/', realpath($dir)).'/'; if ( ! is_writable($dir)) throw new Kohana_Exception('image.directory_unwritable', $dir); if ($status = $this->driver->process($this->image, $this->actions, $dir, $file)) { if ($chmod !== FALSE) { chmod($new_image, $chmod); } } if ($keep_actions === FALSE) $this->actions = array(); return $status; }
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><style type="text/css"><?php include Kohana::find_file('views', 'kohana_errors', FALSE, 'css') ?></style><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title><?php echo $error ?></title><base href="http://php.net/" /></head><body><div id="framework_error" style="width:42em;margin:20px auto;"><h3><?php echo html::specialchars($error) ?></h3><p><?php echo html::specialchars($description) ?></p><?php if ( ! empty($line) AND ! empty($file)): ?><p><?php echo Kohana::lang('core.error_file_line', $file, $line) ?></p><?php endif ?><p><code class="block"><?php echo $message ?></code></p><?php if ( ! empty($trace)): ?><h3><?php echo Kohana::lang('core.stack_trace') ?></h3><?php echo $trace ?><?php endif ?><p class="stats"><?php echo Kohana::lang('core.stats_footer') ?></p></div></body></html>

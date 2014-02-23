@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Klavarog [Alpha]</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<style type="text/css">
+body, input, div, span {
+    font-family: monospace;
+    font-size: 15px;
+}
+body {
+    padding-top: 100px;
+    text-align: center;
+    background: #ddd;
+}
+.data {
+    text-align: left;
+    display: inline-block;
+    width: 780px;
+}
+.text {
+}
+.text span.line {
+    margin: 7px;
+    background: #fff;
+}
+.text .printed {
+    background: #ccc;
+}
+#input_text {
+    padding: 3px 5px;
+    border: 1px solid #777;
+}
+#input_text.error {
+    background: #aaa;
+}
+.info {
+    text-align: center;
+    margin-top: 40px;
+    margin-right: 50px;
+    1margin-left: auto;
+    1margin-right: auto;
+}
+#keyboard {
+    text-align: left;
+    display: inline-block;
+    width: 530px;
+}
+#keyboard .line {
+    clear: left;
+}
+#keyboard .line div {
+    float: left;
+    width: 20px;
+    line-height: 20px;
+    font-size: 15px;
+    border: 1px solid #777;
+    background: #fff;
+    margin: 2px;
+    padding: 5px;
+}
+#keyboard div.f5 {
+    background: #c5d0e6;
+}
+#keyboard div.f4 {
+    background: #ffdead;
+}
+#keyboard div.f3 {
+    background: #ffc8a8;
+}
+#keyboard div.f2 {
+    background: #1fcecb;
+}
+#keyboard div.f1 {
+    background: #bdecb6;
+}
+#keyboard div.tab {
+    width: 40px;
+}
+#keyboard div.caps {
+    width: 50px;
+}
+#keyboard div.lshift {
+    width: 70px;
+}
+#keyboard div.backspace {
+    width: 40px;
+}
+#keyboard div.enter {
+    width: 46px;
+}
+#keyboard div.rshift {
+    width: 62px;
+}
+#keyboard div.lctrl,
+#keyboard div.lwin,
+#keyboard div.lalt,
+#keyboard div.rctrl,
+#keyboard div.rwin,
+#keyboard div.ralt,
+#keyboard div.menu {
+    width: 30px;
+}
+#keyboard div.sys {
+    background: #cacaca;
+    font-size: 12px;
+    text-align: center;
+}
+#keyboard div.space {
+    width: 186px;
+    font-size: 14px;
+    text-align: center;
+}
+#keyboard div.hand {
+    1background: #fce883;
+    1border: 1px solid #000;
+}
+#keyboard div.start {
+    1font-weight: bold;
+}
+#keyboard div.select {
+    margin-top: 40px;
+    text-align: center;
+}
+</style>
+<script type="text/javascript">
+var base = [{
+    lang: "ru",
+    //text: 'Магнитное поле последовательно.'
+    //text: 'Магнитное поле последовательно. Зенитное часовое число дает случайный часовой угол, и в этом вопросе достигнута такая точность расчетов.'
+    text: 'Магнитное поле последовательно. Зенитное часовое число дает случайный часовой угол, и в этом вопросе достигнута такая точность расчетов, что, начиная с того дня, как мы видим, указанного Эннием и записанного в "Больших анналах", было вычислено время предшествовавших затмений солнца, начиная с того, которое в квинктильские ноны произошло в царствование Ромула. Весеннее равноденствие , после осторожного анализа, вращает близкий Южный Треугольник (датировка приведена по Петавиусу, Цеху, Хайсу). Реликтовый ледник, по определению, выбирает спектральный класс, но это не может быть причиной наблюдаемого эффекта.'
+}];
+var text = [];
+var speed = 0;
+$(function() {
+    $("#input_text").focus().keyup(function() {
+        var val = $(this).val();
+    });
+    /*$(document).focus(function() {
+        $("#input_text").focus();
+    });*/
+    var str = base[0].text.replace(/ {2,}/g, " ").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    for (var i = 0; i < 10; i ++) {
+        if (str.length > 80) {
+            var line1_pos = str.substring(0, 81).lastIndexOf(" ");
+            text[i] = str.substring(0, line1_pos) + "&nbsp;";
+            str = str.substring(line1_pos + 1);
+            $("#text" + (i + 1)).html(text[i]);
+        } else {
+            text[i] = str + "&#182;";
+            str = "";
+            $("#text" + (i + 1)).html(text[i]);
+        }
+    }
+    $("#input_text").keyup(function(e) {
+        var input = $(this).val();
+        if (e.which == 13)
+            input = input + "\n";
+        var text0 = text[0].replace("&nbsp;", " ").replace("&#182;", "\n");
+        if (text0.substring(0, input.length) != input) {
+            $(this).addClass("error");
+        } else {
+            $(this).removeClass("error");
+            if (text0.length > 2 && text0.substring(input.length + 0, input.length + 1) == "\n") {
+                $("#keyboard").hide();
+                $("#speed").html("Скорость: " + speed + " символов в минуту").show();
+            }
+            if (input.length >= text0.length) {
+                if (e.which == 13) {
+                    $("#keyboard").show();
+                    $("#speed").hide();
+                }
+                for (var i = 0; i < 10; i ++) {
+                    text[i] = text[i + 1];
+                    $("#text" + (i + 1)).html(text[i]);
+                }
+                text[9] = "";
+                $(this).val("");
+                $("#input_text").width($("#text1").width() + 14);
+                $(this).keyup();
+            } else {
+                $("#text1").html('<span class="printed">'+text[0].substring(0, input.length)+'</span>'+text[0].substring(input.length));
+            }
+        }
+    }).keyup();
+
+    $("#input_text").width($("#text1").width() + 14);
+
+    $("#sel_keyboard").change(function() {
+        var keyboard = $(this).val();
+        $("div.keyboard").hide();
+        if (keyboard == "qwerty") {
+            $("#kb_qwerty").show();
+        }
+        if (keyboard == "dvorak") {
+            $("#kb_dvorak").show();
+        }
+        if (keyboard == "jcuken") {
+            $("#kb_jcuken").show();
+        }
+        $("#input_text").focus();
+    }).change();
+});
+</script>
+</head>
+<body>
+<div class="data">
+<input id="input_text"/>
+<div class="text"><span class="line" id="text1"></span></div>
+<div class="text"><span class="line" id="text2"></span></div>
+<div class="text"><span class="line" id="text3"></span></div>
+</div>
+
+<div class="info">
+
+<div id="keyboard">
+<div class="keyboard" id="kb_qwerty">
+<div class="line"><div class="f5">`~</div><div class="f5">1!</div><div class="f4">2@</div><div class="f3">3#</div><div class="f2">4$</div><div class="f2">5%</div><div class="f1">6^</div><div class="f1">7&amp;</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">=+</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Q</div><div class="f4">W</div><div class="f3">E</div><div class="f2">R</div><div class="f2">T</div><div class="f1">Y</div><div class="f1">U</div><div class="f3">I</div><div class="f4">O</div><div class="f5">P</div><div class="f5">[{</div><div class="f5">]}</div><div class="f5">\|</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">A</div><div class="f4 hand">S</div><div class="f3 hand">D</div><div class="f2 hand start">F</div><div class="f2">G</div><div class="f1">H</div><div class="f1 hand start">J</div><div class="f3 hand">K</div><div class="f4 hand">L</div><div class="f5 hand">;:</div><div class="f5">'"</div><div class="sys enter">Enter</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">Z</div><div class="f4">X</div><div class="f3">C</div><div class="f2">V</div><div class="f2">B</div><div class="f1">N</div><div class="f1">M</div><div class="f3">,&lt;</div><div class="f4">.&gt;</div><div class="f5">/?</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Space</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_dvorak" style="display: none;">
+<div class="line"><div class="f5">`~</div><div class="f5">1!</div><div class="f4">2@</div><div class="f3">3#</div><div class="f2">4$</div><div class="f2">5%</div><div class="f1">6^</div><div class="f1">7&amp;</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">[{</div><div class="f5">]}</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">'"</div><div class="f4">,&lt;</div><div class="f3">.&gt;</div><div class="f2">P</div><div class="f2">Y</div><div class="f1">F</div><div class="f1">G</div><div class="f3">C</div><div class="f4">R</div><div class="f5">L</div><div class="f5">/?</div><div class="f5">+=</div><div class="f5">\|</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">A</div><div class="f4 hand">O</div><div class="f3 hand">E</div><div class="f2 hand start">U</div><div class="f2">I</div><div class="f1">D</div><div class="f1 hand start">H</div><div class="f3 hand">T</div><div class="f4 hand">N</div><div class="f5 hand">S</div><div class="f5">-_</div><div class="sys enter">Enter</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">;:</div><div class="f4">Q</div><div class="f3">J</div><div class="f2">K</div><div class="f2">X</div><div class="f1">B</div><div class="f1">M</div><div class="f3">W</div><div class="f4">V</div><div class="f5">Z</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Space</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+<div class="keyboard" id="kb_jcuken" style="display: none;">
+<div class="line"><div class="f5">Ё</div><div class="f5">1!</div><div class="f4">2"</div><div class="f3">3№</div><div class="f2">4;</div><div class="f2">5%</div><div class="f1">6:</div><div class="f1">7?</div><div class="f3">8*</div><div class="f4">9(</div><div class="f5">0)</div><div class="f5">-_</div><div class="f5">=+</div><div class="sys backspace">Back</div></div>
+<div class="line"><div class="sys tab">Tab</div><div class="f5">Й</div><div class="f4">Ц</div><div class="f3">У</div><div class="f2">К</div><div class="f2">Е</div><div class="f1">Н</div><div class="f1">Г</div><div class="f3">Ш</div><div class="f4">Щ</div><div class="f5">З</div><div class="f5">Х</div><div class="f5">Ъ</div><div class="f5">\/</div></div>
+<div class="line"><div class="sys caps">Caps</div><div class="f5 hand">Ф</div><div class="f4 hand">Ы</div><div class="f3 hand">В</div><div class="f2 hand start">А</div><div class="f2">П</div><div class="f1">Р</div><div class="f1 hand start">О</div><div class="f3 hand">Л</div><div class="f4 hand">Д</div><div class="f5 hand">Ж</div><div class="f5">Э</div><div class="sys enter">Enter</div></div>
+<div class="line"><div class="sys lshift">Shift</div><div class="f5">Я</div><div class="f4">Ч</div><div class="f3">С</div><div class="f2">М</div><div class="f2">И</div><div class="f1">Т</div><div class="f1">Ь</div><div class="f3">Б</div><div class="f4">Ю</div><div class="f5">.,</div><div class="sys rshift">Shift</div></div>
+<div class="line"><div class="sys lctrl">Ctrl</div><div class="sys lwin">Win</div><div class="sys lalt">Alt</div><div class="space">Пробел</div><div class="sys ralt">Alt</div><div class="sys rwin">Win</div><div class="sys menu">Menu</div><div class="sys rctrl">Ctrl</div></div>
+</div>
+
+<div style="clear: left;"></div>
+
+<div class="select">
+<select id="sel_language">
+<option value="en_base">English based</option>
+<option value="en_adv">English advanced</option>
+<option value="ru_base">Русский начальный</option>
+<option value="en_adv" selected="selected">Русский продвинутый</option>
+</select>
+<select id="sel_keyboard">
+<option value="qwerty">qwerty</option>
+<option value="dvorak">Dvorak</option>
+<option value="jcuken" selected="selected">йцукен</option>
+</select>
+</div>
+
+</div>
+
+<div id="speed" style="display: none;">
+</div>
+
+</div>
+
+</body>
+</html>

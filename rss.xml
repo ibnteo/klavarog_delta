@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+    <title>Klavarog</title>
+    <link>http://klava.org/</link>
+    <description>Клавиатурный тренажер онлайн.</description>
+    <language>ru</language>
+    <pubDate>Fri, 06 Sep 2013 21:55:13 +0400</pubDate>
+    <lastBuildDate>Fri, 06 Sep 2013 21:55:13 +0400</lastBuildDate>
+    <managingEditor>ibnteo@gmail.com (Vladimir Romanovich)</managingEditor>
+    <webMaster>ibnteo@gmail.com (Vladimir Romanovich)</webMaster>
+
+    <item>
+        <link>http://vk.com/klavarog</link>
+        <title>Новости проекта теперь во Вконтакте</title>
+        <description><![CDATA[Создана группа Клаварог во Вконтакте: <a href="http://vk.com/klavarog">http://vk.com/klavarog</a>]]></description>
+        <pubDate>Fri, 06 Sep 2013 21:35:32 +0400</pubDate>
+        <guid isPermaLink="false">#11</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Добавлен украинский язык</title>
+        <description><![CDATA[Добавлена украинская раскладка клавиатуры и словари для украинского языка.]]></description>
+        <pubDate>Tue, 14 May 2013 17:03:01 +0400</pubDate>
+        <guid isPermaLink="false">#10</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Добавлены языки программирования</title>
+        <description><![CDATA[Добавлены словари для языков программирования C, C++, Pascal.]]></description>
+        <pubDate>Wed, 20 Mar 2013 17:33:08 +0400</pubDate>
+        <guid isPermaLink="false">#9</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/speed/</link>
+        <title>Настройки метронома</title>
+        <description><![CDATA[Появилась возможность настраивать скорость и отображение визуального метронома, первая галочка возле скорости метронома позволяет указать его постоянную скорость, вторая включает отображение отстающего метронома.]]></description>
+        <pubDate>Wed, 30 Jan 2013 21:17:05 +0400</pubDate>
+        <guid isPermaLink="false">#8</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Режим звукового оповещения ошибки</title>
+        <description><![CDATA[Добавлен режим звукового оповещения ошибки. По-умолчанию отключён. Позволит набирать текст по памяти не глядя на него.]]></description>
+        <pubDate>Sun, 22 Apr 2012 16:38:32 +0400</pubDate>
+        <guid isPermaLink="false">#7</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Добавлена раскладка клавиатуры Workman</title>
+        <description><![CDATA[Добавлена более удобная для печати английского текста раскладка клавиатуры Workman, подробнее о раскладке можно почитать здесь: http://viralintrospection.wordpress.com/2010/09/06/a-different-philosophy-in-designing-keyboard-layouts/#design (на английском).]]></description>
+        <pubDate>Sat, 03 Sep 2011 05:07:14 +0400</pubDate>
+        <guid isPermaLink="false">#6</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/about/</link>
+        <title>Помочь развитию Klavarog-а теперь можно с помощью BitCoin</title>
+        <description><![CDATA[Если хотите помочь в развитии тренажера, можете пожертвовать любую суммы на электронные кошельки Webmoney, Яндекс.Денег. Если нет электронных денег, можно отправить платный SMS на короткий номер. А с недавнего времени можно сделать перевод любого количество монет BitCoin. Подробности внизу страницы http://klava.org/about/]]></description>
+        <pubDate>Tue, 01 Mar 2011 00:02:55 +0300</pubDate>
+        <guid isPermaLink="false">#5</guid>
+    </item>
+
+    <item>
+        <link>https://chrome.google.com/webstore/detail/gnbmgefmkfnnhaohdgbidnkpbecchafp</link>
+        <title>Klavarog Δ в Chrome Web Store</title>
+        <description><![CDATA[В браузере Google Chrome и Chromium можно установить офлайн версию тренажера, размещенную в Chrome Web Store: https://chrome.google.com/webstore/detail/gnbmgefmkfnnhaohdgbidnkpbecchafp]]></description>
+        <pubDate>Wed, 22 Dec 2010 09:34:56 +0300</pubDate>
+        <guid isPermaLink="false">#4</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Раскладка Jcuken под Windows</title>
+        <description><![CDATA[Создан установщик раскладки Jcuken под Windows <a href="http://klava.org/layout/jcuken.zip">klava.org/layout/jcuken.zip</a>]]></description>
+        <pubDate>Tue, 19 Oct 2010 15:26:30 +0400</pubDate>
+        <guid isPermaLink="false">#3</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/</link>
+        <title>Цветовое разделение пальцевых зон</title>
+        <description><![CDATA[Добавлена возможность включать цветовое разделение пальцевых зон: <img src="http://klava.org/gamma/icon-color.png" width="13" height="14"/><br/>По-умолчанию этот режим выключен.]]></description>
+        <pubDate>Tue, 19 Oct 2010 01:48:32 +0400</pubDate>
+        <guid isPermaLink="false">#2</guid>
+    </item>
+
+    <item>
+        <link>http://klava.org/#rus_dict_eng_top2</link>
+        <title>Новый англо-русский словарь на 3200 слов</title>
+        <description>Добавлен новый англо-русский словарь, 3200 слов, более качественный, чем предыдущий (2000). Старый пока оставлен.</description>
+        <pubDate>Sun, 10 Oct 2010 20:06:26 +0400</pubDate>
+        <guid isPermaLink="false">#1</guid>
+    </item>
+</channel>
+</rss>

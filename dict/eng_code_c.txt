@@ -1,0 +1,179 @@
+#include "ch.h"
+
+#if CH_USE_SEMAPHORES || defined(__DOXYGEN__)
+
+#if CH_USE_SEMAPHORES_PRIORITY
+#define sem_insert(tp, qp) prio_insert(tp, qp)
+#else
+#define sem_insert(tp, qp) queue_insert(tp, qp)
+#endif
+
+void chSemInit(Semaphore *sp, cnt_t n) {
+
+  chDbgCheck((sp != NULL) && (n >= 0), "chSemInit");
+
+  queue_init(&sp->s_queue);
+  sp->s_cnt = n;
+}
+
+void chSemReset(Semaphore *sp, cnt_t n) {
+
+  chSysLock();
+  chSemResetI(sp, n);
+  chSchRescheduleS();
+  chSysUnlock();
+}
+
+void chSemResetI(Semaphore *sp, cnt_t n) {
+  cnt_t cnt;
+
+  chDbgCheckClassI();
+  chDbgCheck((sp != NULL) && (n >= 0), "chSemResetI");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemResetI(), #1",
+              "inconsistent semaphore");
+
+  cnt = sp->s_cnt;
+  sp->s_cnt = n;
+  while (++cnt <= 0)
+    chSchReadyI(lifo_remove(&sp->s_queue))->p_u.rdymsg = RDY_RESET;
+}
+
+msg_t chSemWait(Semaphore *sp) {
+  msg_t msg;
+
+  chSysLock();
+  msg = chSemWaitS(sp);
+  chSysUnlock();
+  return msg;
+}
+
+msg_t chSemWaitS(Semaphore *sp) {
+
+  chDbgCheckClassS();
+  chDbgCheck(sp != NULL, "chSemWaitS");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemWaitS(), #1",
+              "inconsistent semaphore");
+
+  if (--sp->s_cnt < 0) {
+    currp->p_u.wtobjp = sp;
+    sem_insert(currp, &sp->s_queue);
+    chSchGoSleepS(THD_STATE_WTSEM);
+    return currp->p_u.rdymsg;
+  }
+  return RDY_OK;
+}
+
+msg_t chSemWaitTimeout(Semaphore *sp, systime_t time) {
+  msg_t msg;
+
+  chSysLock();
+  msg = chSemWaitTimeoutS(sp, time);
+  chSysUnlock();
+  return msg;
+}
+
+msg_t chSemWaitTimeoutS(Semaphore *sp, systime_t time) {
+
+  chDbgCheckClassS();
+  chDbgCheck(sp != NULL, "chSemWaitTimeoutS");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemWaitTimeoutS(), #1",
+              "inconsistent semaphore");
+
+  if (--sp->s_cnt < 0) {
+    if (TIME_IMMEDIATE == time) {
+      sp->s_cnt++;
+      return RDY_TIMEOUT;
+    }
+    currp->p_u.wtobjp = sp;
+    sem_insert(currp, &sp->s_queue);
+    return chSchGoSleepTimeoutS(THD_STATE_WTSEM, time);
+  }
+  return RDY_OK;
+}
+
+void chSemSignal(Semaphore *sp) {
+
+  chDbgCheck(sp != NULL, "chSemSignal");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemSignal(), #1",
+              "inconsistent semaphore");
+
+  chSysLock();
+  if (++sp->s_cnt <= 0)
+    chSchWakeupS(fifo_remove(&sp->s_queue), RDY_OK);
+  chSysUnlock();
+}
+
+void chSemSignalI(Semaphore *sp) {
+
+  chDbgCheckClassI();
+  chDbgCheck(sp != NULL, "chSemSignalI");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemSignalI(), #1",
+              "inconsistent semaphore");
+
+  if (++sp->s_cnt <= 0) {
+    Thread *tp = fifo_remove(&sp->s_queue);
+    tp->p_u.rdymsg = RDY_OK;
+    chSchReadyI(tp);
+  }
+}
+
+void chSemAddCounterI(Semaphore *sp, cnt_t n) {
+
+  chDbgCheckClassI();
+  chDbgCheck((sp != NULL) && (n > 0), "chSemAddCounterI");
+  chDbgAssert(((sp->s_cnt >= 0) && isempty(&sp->s_queue)) ||
+              ((sp->s_cnt < 0) && notempty(&sp->s_queue)),
+              "chSemAddCounterI(), #1",
+              "inconsistent semaphore");
+
+  while (n > 0) {
+    if (++sp->s_cnt <= 0)
+      chSchReadyI(fifo_remove(&sp->s_queue))->p_u.rdymsg = RDY_OK;
+    n--;
+  }
+}
+
+#if CH_USE_SEMSW
+msg_t chSemSignalWait(Semaphore *sps, Semaphore *spw) {
+  msg_t msg;
+
+  chDbgCheck((sps != NULL) && (spw != NULL), "chSemSignalWait");
+  chDbgAssert(((sps->s_cnt >= 0) && isempty(&sps->s_queue)) ||
+              ((sps->s_cnt < 0) && notempty(&sps->s_queue)),
+              "chSemSignalWait(), #1",
+              "inconsistent semaphore");
+  chDbgAssert(((spw->s_cnt >= 0) && isempty(&spw->s_queue)) ||
+              ((spw->s_cnt < 0) && notempty(&spw->s_queue)),
+              "chSemSignalWait(), #2",
+              "inconsistent semaphore");
+
+  chSysLock();
+  if (++sps->s_cnt <= 0)
+    chSchReadyI(fifo_remove(&sps->s_queue))->p_u.rdymsg = RDY_OK;
+  if (--spw->s_cnt < 0) {
+    Thread *ctp = currp;
+    sem_insert(ctp, &spw->s_queue);
+    ctp->p_u.wtobjp = spw;
+    chSchGoSleepS(THD_STATE_WTSEM);
+    msg = ctp->p_u.rdymsg;
+  }
+  else {
+    chSchRescheduleS();
+    msg = RDY_OK;
+  }
+  chSysUnlock();
+  return msg;
+}
+#endif /* CH_USE_SEMSW */
+
+#endif /* CH_USE_SEMAPHORES */
